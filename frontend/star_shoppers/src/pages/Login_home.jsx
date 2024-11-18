@@ -12,7 +12,7 @@ export default function Login_home(){
         <div className="sign_page">
             <Col className="sign_col-1">
                 <img src={login_1} alt="" style={{height:"60%",width:"70%"}}/>
-                <Button onClick={()=>navigate('/shopper-login')} 
+                <Button onClick={()=>navigate('/shopper-home')} 
                     style={{padding:"0.8rem",width:"50%",backgroundColor:"#1565c0",color:"#e3f2fd",fontWeight:600}}>
                         Shoppers Login
                 </Button>
@@ -20,7 +20,7 @@ export default function Login_home(){
 
             <Col className="sign_col-2">
                 <img src={login_2} alt="" style={{height:"60%",width:"70%"}}/>
-                <Button onClick={()=>navigate('/seller-login')}
+                <Button onClick={()=>navigate('/seller-home')}
                     style={{padding:"0.8rem",width:"50%",backgroundColor:"#e3f2fd",color:"#1565c0",fontWeight:600}}>
                         Sellers Login
                 </Button>

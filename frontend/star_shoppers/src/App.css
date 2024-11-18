@@ -1,0 +1,16 @@
+.seller-navbar{
+    background-color: 	#eaa0a2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    height: 13vh;
+}
+
+.seller-heading{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
