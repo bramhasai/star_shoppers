@@ -44,7 +44,7 @@ function App() {
 
   useEffect(()=>{
     const handleAuthCheck = () =>{
-      if(location.pathname === '/seller-home'){
+      if(location.pathname.startsWith('/seller')){
         const unsubscribe = authSeller.onAuthStateChanged((user)=>{
           setSeller(user);
           if(!user){
@@ -93,7 +93,7 @@ function App() {
     <div>
       {!isSellerAuthPage && isSellerPage &&(
         <Navbar className="head_navbar">
-          <Navbar.Brand className="brand_heading" onClick={()=>navigate('/seller-home')} style={{cursor:'pointer'}}>
+          <Navbar.Brand className="brand_heading" onClick={()=>navigate(`/seller-home/${seller.uid}`)} style={{cursor:'pointer'}}>
             <img src={Logo} alt="" height={50} width={50}/>
             <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SELLER'S</i></h2>
           </Navbar.Brand>
@@ -151,7 +151,7 @@ function App() {
         {/* seller */}
         <Route path="/seller-register" element={<RegisterSeller />} />
         <Route path="/seller-login" element={<LoginSeller />} />
-        <Route path="/seller-home" element={<SellerHome />} />
+        <Route path="/seller-home/:id" element={<SellerHome />} />
         <Route path="/seller-addProduct" element={<AddProduct />} />
         <Route path="/seller-updateProduct" element={<UpdateProduct />} />
       </Routes>
