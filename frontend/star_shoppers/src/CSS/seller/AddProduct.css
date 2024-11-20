@@ -1,0 +1,32 @@
+.add-product-div{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    height: 87vh;
+    overflow-y: auto;
+
+}
+
+.add-product-col-1{
+    background-color: #b3daff;
+    border-right: 2px solid #4a0072;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.add_products_form{
+    width: 80%;
+}
+
+.add_products_form .form-control{
+    padding: 0.7rem !important;
+}
+
+.add-product-col-2{
+    padding: 2rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+}

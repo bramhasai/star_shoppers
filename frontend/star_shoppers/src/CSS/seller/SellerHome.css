@@ -1,0 +1,20 @@
+.seller-home-div{
+    display: grid;
+    grid-template-columns: 35% 65%;
+    height: 87vh;
+}
+
+.seller-home-col-1{
+    border-right: 2px solid #4a0072;
+    padding: 1rem 1.5rem;
+}
+
+.seller-home-col-2{
+    padding: 1rem 2rem;
+}
+
+.my_products{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

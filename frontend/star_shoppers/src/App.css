@@ -1,5 +1,5 @@
-.seller-navbar{
-    background-color: 	#eaa0a2;
+.head_navbar{
+    background-color: 	#f0d4fc;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7,10 +7,27 @@
     height: 13vh;
 }
 
-.seller-heading{
+.brand_heading{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
 }
+
+.logout_button{
+    background-color: #f0d4fc;
+    color: #4a0072;
+    border: 2px solid #4a0072;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout_button_seller:hover {
+    background-color: #d4a9fc;
+    color: #ffffff;
+    border-color: #4a0072;
+  }

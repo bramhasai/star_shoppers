@@ -13,6 +13,8 @@ import ShopperHome from "./pages/shopper/ShopperHome";
 import RegisterSeller from "./pages/seller/RegisterSeller";
 import LoginSeller from "./pages/seller/LoginSeller";
 import SellerHome from "./pages/seller/SellerHome";
+import AddProduct from "./pages/seller/AddProduct";
+import UpdateProduct from "./pages/seller/UpdateProduct";
 
 //images
 import Logo from './assets/logo.png'
@@ -22,6 +24,7 @@ import { signOut,onAuthStateChanged } from "firebase/auth";
 
 //App css file
 import './App.css';
+
 
 
 function App() {
@@ -89,17 +92,17 @@ function App() {
   return (
     <div>
       {!isSellerAuthPage && isSellerPage &&(
-        <Navbar className="seller-navbar">
-          <Navbar.Brand className="seller-heading" onClick={()=>navigate('/seller-home')} style={{cursor:'pointer'}}>
+        <Navbar className="head_navbar">
+          <Navbar.Brand className="brand_heading" onClick={()=>navigate('/seller-home')} style={{cursor:'pointer'}}>
             <img src={Logo} alt="" height={50} width={50}/>
-            <h3 style={{margin:0}}><i>STAR SELLER'S</i></h3>
+            <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SELLER'S</i></h2>
           </Navbar.Brand>
           <Navbar.Collapse className="justify-content-end">
             {/* {user && <Button onClick={()=>navigate('/cart')} style={{backgroundColor:"transparent", outline:"none", border:"none"}}>
               <img src={cart_logo}  style={{height:"2.5rem", width:"2.5rem"}} alt="" />
               {Object.keys(cartItems).length>0 && <Badge style={{borderRadius:"50%", marginRight:"1rem"}} bg='success'>{Object.keys(cartItems).length}</Badge>}
             </Button>} */}
-            <Button 
+            <Button className="logout_button"
               onClick={()=>{
                 if(seller){
                   handleLogoutSeller();
@@ -108,21 +111,21 @@ function App() {
                 }
               }}
             >
-              {seller?"Logout":"Login"}
+              Logout
             </Button> 
           </Navbar.Collapse>
         </Navbar>
       )}
 
       {!isShopperAuthPage && isShopperPage  &&(
-        <Navbar>
-          <Navbar.Brand onClick={()=>navigate('/shopper-home')} style={{cursor:'pointer'}}>
+        <Navbar className="head_navbar">
+          <Navbar.Brand className="brand_heading" onClick={()=>navigate('/shopper-home')} style={{cursor:'pointer'}}>
             <img src={Logo} alt="" height={50} width={50}/>
-            <h3><i>STAR SHOPPER'S</i></h3>
+            <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SHOPPER'S</i></h2>
           </Navbar.Brand>
 
           <Navbar.Collapse className="justify-content-end">
-            <Button
+            <Button className="logout_button"
               onClick={() => {
                 if (shopper) {
                   handleLogoutShopper();
@@ -149,6 +152,8 @@ function App() {
         <Route path="/seller-register" element={<RegisterSeller />} />
         <Route path="/seller-login" element={<LoginSeller />} />
         <Route path="/seller-home" element={<SellerHome />} />
+        <Route path="/seller-addProduct" element={<AddProduct />} />
+        <Route path="/seller-updateProduct" element={<UpdateProduct />} />
       </Routes>
     </div>
   )
