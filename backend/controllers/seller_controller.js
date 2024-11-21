@@ -4,7 +4,7 @@ const SellerProducts = require('../models/sellerProducts_model');
 
 const getMyProducts = async(req,res)=>{
     try{
-        const {seller_id} =req.params.seller_id;
+        const {seller_id} =req.params;
         const seller = await SellerProducts.findOne({seller_id}).populate("products");
         if(!seller){
             console.log("Seller not found");
@@ -17,15 +17,23 @@ const getMyProducts = async(req,res)=>{
     }
 }
 
-const addProducts = async(req,res)=>{
-    try{
-        const {seller_id} = req.params;
-        const {title,description,price,discount,category,imageUrl} = req.body;
+const addProducts = async (req, res) => {
+    try {
+        const { seller_id } = req.params;
+        const { title, description, price, discount, category, imageUrl } = req.body;
 
-        const seller = await SellerProducts.findOne({seller_id});
-        if(!seller){
-            return res.status(404).json({message:"Seller not found"});
+        // Check if the seller exists
+        let seller = await SellerProducts.findOne({ seller_id });
+
+        if (!seller) {
+            // If seller doesn't exist, create a new seller
+            seller = new SellerProducts({
+                seller_id,
+                products: [] // Initialize products array
+            });
         }
+
+        // Create a new product
         const product = new Products({
             title,
             description,
@@ -34,16 +42,22 @@ const addProducts = async(req,res)=>{
             category,
             imageUrl,
             seller_id
-        })
+        });
+
+        // Save the product
         const saved_product = await product.save();
+
+        // Add the product ID to the seller's products array
         seller.products.push(saved_product._id);
+
+        // Save the seller (either newly created or updated)
         await seller.save();
-        res.status(201).json({ message: "Product added successfully", product: savedProduct });
-    }catch(error){
+
+        res.status(201).json({ message: "Product added successfully", product: saved_product });
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error });
     }
-
-}
+};
 
 module.exports = [getMyProducts,addProducts];

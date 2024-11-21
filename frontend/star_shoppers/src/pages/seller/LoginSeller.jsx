@@ -19,7 +19,7 @@ export default function LoginSeller(){
         try{
             const userCredential = await signInWithEmailAndPassword(authSeller,email,password);
             const seller = userCredential.user;
-            navigate(`/seller-home/${seller.uid}`);
+            navigate(`/seller/home/${seller.uid}`);
         }catch(err){
             setError(err.message);
         }

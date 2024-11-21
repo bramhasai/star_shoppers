@@ -40,31 +40,66 @@ function App() {
   const isSellerPage = location.pathname.startsWith('/seller');
   const isShopperPage = location.pathname.startsWith('/shopper');
 
+  useEffect(() => {
+    const handleAuthCheck = () => {
+      let unsubscribe;
 
-
-  useEffect(()=>{
-    const handleAuthCheck = () =>{
-      if(location.pathname.startsWith('/seller')){
-        const unsubscribe = authSeller.onAuthStateChanged((user)=>{
+      if (location.pathname.startsWith('/seller')) {
+        unsubscribe = authSeller.onAuthStateChanged((user) => {
           setSeller(user);
-          if(!user){
+          // Redirect to login only if not authenticated and not on the registration page
+          if (!user && location.pathname !== '/seller-register') {
             navigate('/seller-login');
           }
-        })
-        return unsubscribe;
-      }
-      else if(location.pathname === '/shopper-home'){
-        const unsubscribe = authShopper.onAuthStateChanged((user)=>{
+        });
+      } else if (location.pathname === '/shopper-home') {
+        unsubscribe = authShopper.onAuthStateChanged((user) => {
           setShopper(user);
-          if(!user){
-            navigate('/shopper-login')
+          // Redirect to login only if not authenticated and not on the registration page
+          if (!user && location.pathname !== '/shopper-register') {
+            navigate('/shopper-login');
           }
-        })
-        return unsubscribe;
+        });
       }
-    }
-    handleAuthCheck();
-  },[location.pathname,navigate])
+
+      return unsubscribe;
+    };
+
+    const unsubscribe = handleAuthCheck();
+
+    // Cleanup the subscription on component unmount
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [location.pathname, navigate, setSeller, setShopper]);
+
+
+
+  // useEffect(()=>{
+  //   const handleAuthCheck = () =>{
+  //     if(location.pathname.startsWith('/seller')){
+  //       const unsubscribe = authSeller.onAuthStateChanged((user)=>{
+  //         setSeller(user);
+  //         if(!user){
+  //           navigate('/seller-login');
+  //         }
+  //       })
+  //       return unsubscribe;
+  //     }
+  //     else if(location.pathname === '/shopper-home'){
+  //       const unsubscribe = authShopper.onAuthStateChanged((user)=>{
+  //         setShopper(user);
+  //         if(!user){
+  //           navigate('/shopper-login')
+  //         }
+  //       })
+  //       return unsubscribe;
+  //     }
+  //   }
+  //   handleAuthCheck();
+  // },[location.pathname,navigate])
 
 
   const handleLogoutSeller = async()=>{
@@ -93,7 +128,7 @@ function App() {
     <div>
       {!isSellerAuthPage && isSellerPage &&(
         <Navbar className="head_navbar">
-          <Navbar.Brand className="brand_heading" onClick={()=>navigate(`/seller-home/${seller.uid}`)} style={{cursor:'pointer'}}>
+          <Navbar.Brand className="brand_heading" onClick={()=>navigate(`/seller/home/${seller.uid}`)} style={{cursor:'pointer'}}>
             <img src={Logo} alt="" height={50} width={50}/>
             <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SELLER'S</i></h2>
           </Navbar.Brand>
@@ -151,8 +186,8 @@ function App() {
         {/* seller */}
         <Route path="/seller-register" element={<RegisterSeller />} />
         <Route path="/seller-login" element={<LoginSeller />} />
-        <Route path="/seller-home/:id" element={<SellerHome />} />
-        <Route path="/seller-addProduct" element={<AddProduct />} />
+        <Route path="/seller/home/:id" element={<SellerHome />} />
+        <Route path="/seller/:id/addProduct" element={<AddProduct />} />
         <Route path="/seller-updateProduct" element={<UpdateProduct />} />
       </Routes>
     </div>

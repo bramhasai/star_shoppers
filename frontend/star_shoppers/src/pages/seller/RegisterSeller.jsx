@@ -46,7 +46,7 @@ export default function RegisterSeller(){
                 role:"seller",
                 createdAt:new Date().toISOString(),
             });
-            navigate(`/seller-home/${seller.uid}`);
+            navigate(`/seller/home/${seller.uid}`);
         }
         catch(error){
             setError(error.message);

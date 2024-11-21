@@ -2,6 +2,9 @@ import { Col,Button,Form,Card } from "react-bootstrap";
 import '../../CSS/seller/AddProduct.css';
 import image from '../../assets/image.jpg'
 import { useState } from "react";
+import axios from "axios";
+import { onAuthStateChanged } from "firebase/auth";
+import { authSeller } from "../../firebase";
 
 export default function addProduct(){
     const [productDetails,setProductDetails] = useState({
@@ -14,8 +17,9 @@ export default function addProduct(){
     })
     const [error, setError] = useState("");
 
-    const handleAddProduct = (e)=>{
+    const handleAddProduct = async (e) => {
         e.preventDefault();
+    
         if (
             !productDetails.title || !productDetails.description || !productDetails.price ||
             !productDetails.discount || !productDetails.category || !productDetails.imageUrl
@@ -23,23 +27,35 @@ export default function addProduct(){
             setError("Please fill in all fields before submitting.");
             return;
         }
-
-
+    
         if (productDetails.price <= 0) {
             setError("Price must be a positive value.");
             return;
         }
-
+    
         if (productDetails.discount < 0 || productDetails.discount > 100) {
             setError("Discount must be between 0 and 100.");
             return;
         }
-
-
-        setError("");
-        console.log("Product Details Submitted:", productDetails);
-        alert("Product added successfully!");
-    }
+    
+        onAuthStateChanged(authSeller, async (user) => {
+            if (user) {
+                try {
+                    const res = await axios.post(
+                        `http://localhost:3000/seller/${user.uid}/addProducts`,
+                        productDetails
+                    );
+                    alert(res.data.message);
+                } catch (error) {
+                    console.error("Error adding product:", error);
+                    setError("Failed to add product. Please try again.");
+                }
+            } else {
+                navigate('/seller-login');
+            }
+        });
+    };
+     
 
     return(
         <div className="add-product-div">

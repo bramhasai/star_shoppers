@@ -14,7 +14,7 @@ export default function Login_home(){
     const handleSellerLogin = () => {
         onAuthStateChanged(authSeller, (user) => {
           if (user) {
-            navigate(`/seller-home/${user.uid}`); 
+            navigate(`/seller/home/${user.uid}`); 
           } else {
             navigate("/seller-login"); 
           }
