@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const productSchema = mongoose.Schema({
     title:{
         type:String,
@@ -21,12 +20,23 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    imageUrl: {
+    image:{
+        type:Buffer,
+        required:true
+    },
+    imageType: {
         type: String,
+        required:true
     },
     seller_id: {
         type: String,
         required: true,
+    }
+});
+
+productSchema.virtual('imageSrc').get(function(){
+    if (this.image != null && this.imageType != null) {
+        return `data:${this.imageType};base64,${this.image.toString('base64')}`;
     }
 });
 

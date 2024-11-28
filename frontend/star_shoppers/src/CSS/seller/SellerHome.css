@@ -10,11 +10,109 @@
 }
 
 .seller-home-col-2{
-    padding: 1rem 2rem;
+    padding: 1rem 1rem;
+    height: 7vh;
 }
 
 .my_products{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+
+.products_render{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding-top: 1rem;
+    padding-left: 0rem !important;
+    height: 75vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.product_card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    height: 100%; /* Ensures uniform card size */
+    width: 100%;
+}
+
+.product_image{
+    height: 6rem;
+    width: 6rem;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.product-card-body {
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+.product-card-title {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card-price {
+    color: #3482eb;
+    margin: 0;
+    padding-top: 0.2rem;
+    font-size: 0.8rem;
+}
+
+.product-card-discount {
+    color: green;
+    font-size: 0.8rem;
+}
+
+.product-card-mrp {
+    text-decoration: line-through;
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+.product-card-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Ensures buttons are side by side */
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+}
+
+.edit-btn {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    width: 100%;
+    background-color: #3482eb;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.delete-btn {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    width: 100%;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
 }

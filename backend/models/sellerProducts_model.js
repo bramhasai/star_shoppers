@@ -6,7 +6,6 @@ const sellerSchema = mongoose.Schema({
         required:true,
         unique:true
     },
-
     products:[
         {
             type:mongoose.Schema.Types.ObjectId,

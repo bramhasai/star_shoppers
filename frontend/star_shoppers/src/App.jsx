@@ -47,7 +47,6 @@ function App() {
       if (location.pathname.startsWith('/seller')) {
         unsubscribe = authSeller.onAuthStateChanged((user) => {
           setSeller(user);
-          // Redirect to login only if not authenticated and not on the registration page
           if (!user && location.pathname !== '/seller-register') {
             navigate('/seller-login');
           }
@@ -55,7 +54,6 @@ function App() {
       } else if (location.pathname === '/shopper-home') {
         unsubscribe = authShopper.onAuthStateChanged((user) => {
           setShopper(user);
-          // Redirect to login only if not authenticated and not on the registration page
           if (!user && location.pathname !== '/shopper-register') {
             navigate('/shopper-login');
           }
@@ -64,10 +62,7 @@ function App() {
 
       return unsubscribe;
     };
-
     const unsubscribe = handleAuthCheck();
-
-    // Cleanup the subscription on component unmount
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -76,30 +71,6 @@ function App() {
   }, [location.pathname, navigate, setSeller, setShopper]);
 
 
-
-  // useEffect(()=>{
-  //   const handleAuthCheck = () =>{
-  //     if(location.pathname.startsWith('/seller')){
-  //       const unsubscribe = authSeller.onAuthStateChanged((user)=>{
-  //         setSeller(user);
-  //         if(!user){
-  //           navigate('/seller-login');
-  //         }
-  //       })
-  //       return unsubscribe;
-  //     }
-  //     else if(location.pathname === '/shopper-home'){
-  //       const unsubscribe = authShopper.onAuthStateChanged((user)=>{
-  //         setShopper(user);
-  //         if(!user){
-  //           navigate('/shopper-login')
-  //         }
-  //       })
-  //       return unsubscribe;
-  //     }
-  //   }
-  //   handleAuthCheck();
-  // },[location.pathname,navigate])
 
 
   const handleLogoutSeller = async()=>{
@@ -169,7 +140,7 @@ function App() {
                 }
               }}
             >
-              {shopper ? "Logout" : "Login"}
+              Logout
             </Button>
           </Navbar.Collapse>
         </Navbar>
@@ -188,7 +159,7 @@ function App() {
         <Route path="/seller-login" element={<LoginSeller />} />
         <Route path="/seller/home/:id" element={<SellerHome />} />
         <Route path="/seller/:id/addProduct" element={<AddProduct />} />
-        <Route path="/seller-updateProduct" element={<UpdateProduct />} />
+        <Route path="/seller/:id/updateProduct/:product_id" element={<UpdateProduct />} />
       </Routes>
     </div>
   )
