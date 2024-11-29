@@ -47,7 +47,7 @@ export default function RegisterShopper(){
                 role:"shopper",
                 createdAt:new Date().toISOString(),
             });
-            navigate('/shopper-home');
+            navigate(`/shopper/home/${shopper.uid}`);
         }catch(error){
             setError(error.message);
         }

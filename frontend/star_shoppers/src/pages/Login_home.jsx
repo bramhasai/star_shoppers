@@ -24,7 +24,7 @@ export default function Login_home(){
     const handleShopperLogin = () => {
         onAuthStateChanged(authShopper, (user) => {
           if (user) {
-            navigate(`/shopper-home/${user.uid}`); 
+            navigate(`/shopper/home/${user.uid}`); 
           } else {
             navigate("/shopper-login"); 
           }

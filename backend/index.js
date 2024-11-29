@@ -11,7 +11,7 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 
 //express after cors
 app.use(express.json());
-app.use('/seller',sellerRoutes)
+app.use(sellerRoutes)
 
 
 //server

@@ -18,7 +18,7 @@ export default function LoginShopper(){
         try{
             const userCredential =await signInWithEmailAndPassword(authShopper,email,password);
             const shopper =userCredential.user;
-            navigate('/shopper-home')
+            navigate(`/shopper/home/${shopper.uid}`)
         }catch(error){
             setError(error.message);
         }

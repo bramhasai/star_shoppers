@@ -162,7 +162,7 @@ export default function addProduct(){
                         <option value="Groceries">Groceries</option>
                         <option value="Furniture">Furniture</option>
                         <option value="Automotive">Automotive</option>
-                        <option value="Jewelry & Watches">Jewelry & Watches</option>
+                        <option value="jewelley & Watches">jewelley & Watches</option>
                         <option value="Food & Beverages">Food & Beverages</option>
                         <option value="Baby Products">Baby Products</option>
                         <option value="Office Supplies">Office Supplies</option>

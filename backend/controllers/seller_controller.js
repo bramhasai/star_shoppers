@@ -102,17 +102,6 @@ const updateProduct = async (req, res) => {
             message: "Product updated successfully",
             product: updatedProduct,
         });
-        // const updatedProduct = await Products.findByIdAndUpdate(
-        //     product_id,
-        //     { title, description, price, discount, category, imageUrl },
-        //     { new: true } 
-        // );
-
-        // res.status(200).json({
-        //     success: true,
-        //     message: "Product updated successfully",
-        //     product: updatedProduct,
-        // });
 
     } catch (error) {
         console.error("Error updating product:", error);
@@ -145,6 +134,28 @@ const deleteProduct = async(req,res)=>{
 }
 
 
+const getAllProducts = async(req,res)=>{
+    try{
+        const allProducts = await Products.find();
+        const allProductsWithImages = allProducts.map(product => ({
+            ...product._doc, // Spread product fields
+            image: product.image ? `data:${product.imageType};base64,${product.image.toString('base64')}` : null,
+        }));
+        res.status(200).json({
+            status:'success',
+            results: allProductsWithImages.length,
+            data : {products: allProductsWithImages}
+        });
+    }catch(error){
+        res.status(500).json({
+            status:'error',
+            message:"Failed to retrieve products",
+            error:error.message
+        });
+    }  
+}
 
 
-module.exports = [getMyProducts,addProducts,updateProduct,deleteProduct];
+
+
+module.exports = [getMyProducts,addProducts,updateProduct,deleteProduct,getAllProducts];

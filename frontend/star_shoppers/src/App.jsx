@@ -8,6 +8,9 @@ import Login_home from "./pages/Login_home";
 import RegisterShopper from "./pages/shopper/RegisterShopper";
 import LoginShopper from "./pages/shopper/LoginShopper";
 import ShopperHome from "./pages/shopper/ShopperHome";
+import ShopperProducts from "./pages/shopper/ShopperProducts";
+import ShopperCart from './pages/shopper/ShopperCart';
+import ShopperOrders from  './pages/shopper/ShopperOrders';
 
 //seller
 import RegisterSeller from "./pages/seller/RegisterSeller";
@@ -20,15 +23,13 @@ import UpdateProduct from "./pages/seller/UpdateProduct";
 import Logo from './assets/logo.png'
 
 import { authSeller, authShopper } from "./firebase";
-import { signOut,onAuthStateChanged } from "firebase/auth";
+import { signOut } from "firebase/auth";
 
 //App css file
 import './App.css';
 
 
-
 function App() {
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -51,7 +52,7 @@ function App() {
             navigate('/seller-login');
           }
         });
-      } else if (location.pathname === '/shopper-home') {
+      } else if (location.pathname.startsWith('/shopper')) {
         unsubscribe = authShopper.onAuthStateChanged((user) => {
           setShopper(user);
           if (!user && location.pathname !== '/shopper-register') {
@@ -99,7 +100,10 @@ function App() {
     <div>
       {!isSellerAuthPage && isSellerPage &&(
         <Navbar className="head_navbar">
-          <Navbar.Brand className="brand_heading" onClick={()=>navigate(`/seller/home/${seller.uid}`)} style={{cursor:'pointer'}}>
+          <Navbar.Brand className="brand_heading" 
+            onClick={()=>navigate(`/seller/home/${seller.uid}`)} 
+            style={{cursor:'pointer'}}
+          >
             <img src={Logo} alt="" height={50} width={50}/>
             <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SELLER'S</i></h2>
           </Navbar.Brand>
@@ -125,7 +129,10 @@ function App() {
 
       {!isShopperAuthPage && isShopperPage  &&(
         <Navbar className="head_navbar">
-          <Navbar.Brand className="brand_heading" onClick={()=>navigate('/shopper-home')} style={{cursor:'pointer'}}>
+          <Navbar.Brand className="brand_heading" 
+            onClick={()=>navigate(`/shopper/home/${shopper.uid}`)} 
+            style={{cursor:'pointer'}}
+          >
             <img src={Logo} alt="" height={50} width={50}/>
             <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SHOPPER'S</i></h2>
           </Navbar.Brand>
@@ -152,8 +159,11 @@ function App() {
         {/* shopper */}
         <Route path="/shopper-register" element={<RegisterShopper />} />
         <Route path="/shopper-login" element={<LoginShopper />} />
-        <Route path="/shopper-home" element={<ShopperHome />} />
-
+        <Route path="/shopper/home/:id" element={<ShopperHome />} />
+        <Route path="/shopper/:id/products-home" element={<ShopperProducts />}/>
+        <Route path="/shopper/:id/cart" element={<ShopperCart/>} />
+        <Route path="/shopper/:id/orders" element={<ShopperOrders/>} />
+ 
         {/* seller */}
         <Route path="/seller-register" element={<RegisterSeller />} />
         <Route path="/seller-login" element={<LoginSeller />} />
