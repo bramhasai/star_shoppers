@@ -9,5 +9,5 @@ App_Routes.get('/seller/home/:seller_id',getMyProducts);
 App_Routes.post('/seller/:seller_id/addProducts',upload.single('image'),addProducts)
 App_Routes.put('/seller/:seller_id/updateProduct/:product_id',upload.single('image'),updateProduct)
 App_Routes.delete('/seller/:seller_id/deleteProduct/:product_id',deleteProduct)
-App_Routes.get('/shopper/:shopper_id/products-home',getAllProducts)
+App_Routes.get('/shopper/:shopper_id/products-home',getAllProducts);
 module.exports = App_Routes;

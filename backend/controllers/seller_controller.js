@@ -5,6 +5,11 @@ const SellerProducts = require('../models/sellerProducts_model');
 const storage = multer.memoryStorage();
 const upload = multer({storage})
 
+const algoliasearch = require('algoliasearch');
+const client = algoliasearch('AN5IZ09K1M', '750deda1f27131266eef48792fdcce83');
+const index = client.initIndex('products');
+
+//seller
 const getMyProducts = async(req,res)=>{
     try{
         const {seller_id} =req.params;
@@ -25,9 +30,7 @@ const getMyProducts = async(req,res)=>{
     }
 }
 
-
-
-
+//seller
 const addProducts = async (req, res) => {
     try {
         const { seller_id } = req.params;
@@ -39,14 +42,12 @@ const addProducts = async (req, res) => {
 
         let seller = await SellerProducts.findOne({ seller_id });
         if (!seller) {
-            // If seller doesn't exist, create a new seller
             seller = new SellerProducts({
                 seller_id,
-                products: [] // Initialize products array
+                products: [] 
             });
         }
 
-        // Create a new product
         const product = new Products({
             title,
             description,
@@ -63,6 +64,21 @@ const addProducts = async (req, res) => {
 
         await seller.save();
 
+        const base64Image = `data:${saved_product.imageType};base64,${saved_product.image.toString('base64')}`;
+        // algolia
+        await index.saveObject({
+            objectID: saved_product._id,
+            title: saved_product.title,
+            description: saved_product.description,
+            price: saved_product.price,
+            discount: saved_product.discount,
+            category: saved_product.category,
+            // image: saved_product.image,
+            // imageType : saved_product.imageType,
+            image: base64Image,
+            seller_id: saved_product.seller_id
+        });
+
         res.status(201).json({ message: "Product added successfully", product: saved_product });
     } catch (error) {
         console.error(error);
@@ -70,6 +86,7 @@ const addProducts = async (req, res) => {
     }
 };
 
+//seller
 const updateProduct = async (req, res) => {
     try {
         const { product_id, seller_id } = req.params; // Extract IDs from route parameters
@@ -91,17 +108,32 @@ const updateProduct = async (req, res) => {
         product.discount = discount || product.discount;
         product.category = category || product.category;
 
+        let base64Image = null;
         if (req.file) {
             product.image = req.file.buffer; // Update binary data
             product.imageType = req.file.mimetype; // Update MIME type
+            base64Image = `data:${product.imageType};base64,${product.image.toString('base64')}`;
         }
 
         const updatedProduct = await product.save();
+
+        await index.partialUpdateObject({
+            objectID: updatedProduct._id,
+            title: updatedProduct.title,
+            description: updatedProduct.description,
+            price: updatedProduct.price,
+            discount: updatedProduct.discount,
+            category: updatedProduct.category,
+            ...(base64Image && { image: base64Image })
+        });
+
         res.status(200).json({
             success: true,
             message: "Product updated successfully",
             product: updatedProduct,
         });
+
+
 
     } catch (error) {
         console.error("Error updating product:", error);
@@ -109,7 +141,7 @@ const updateProduct = async (req, res) => {
     }
 };
 
-
+//seller
 const deleteProduct = async(req,res)=>{
     try{
         const {seller_id,product_id} = req.params;
@@ -123,9 +155,13 @@ const deleteProduct = async(req,res)=>{
             {$pull:{products: product_id}},
             {new :true}
         );
+
         if(!seller){
             return res.status(404).json({message:"Seller not found"});
         }
+
+        await index.deleteObject(product_id)
+
         res.status(200).json({message:"Product deleted successfully"});
     }catch(error){
         console.log("Error deleting product : ",error);
@@ -133,7 +169,7 @@ const deleteProduct = async(req,res)=>{
     }
 }
 
-
+//shopper
 const getAllProducts = async(req,res)=>{
     try{
         const allProducts = await Products.find();
@@ -154,8 +190,6 @@ const getAllProducts = async(req,res)=>{
         });
     }  
 }
-
-
 
 
 module.exports = [getMyProducts,addProducts,updateProduct,deleteProduct,getAllProducts];

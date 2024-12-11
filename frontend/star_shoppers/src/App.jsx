@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Routes,Route, useNavigate, useLocation } from "react-router-dom";
-import { Button, Navbar } from "react-bootstrap";
+import { Button, Navbar, Badge} from "react-bootstrap";
 
 import Login_home from "./pages/Login_home";
 //Shopper
@@ -21,6 +21,9 @@ import UpdateProduct from "./pages/seller/UpdateProduct";
 
 //images
 import Logo from './assets/logo.png'
+import cart_logo from './assets/cart_logo.png';
+import logout from './assets/logout.png';
+import userIcon from './assets/userIcon.png';
 
 import { authSeller, authShopper } from "./firebase";
 import { signOut } from "firebase/auth";
@@ -35,6 +38,14 @@ function App() {
 
   const [shopper,setShopper] = useState(null);
   const [seller,setSeller] =  useState(null);
+  const [cartItems,setCartItems]=useState(()=>{
+    const currentUser = authShopper.currentUser;
+    if(currentUser){
+      const storedCartItems = localStorage.getItem(`cartItems_${currentUser.uid}`);
+      return storedCartItems ? JSON.parse(storedCartItems) : {};
+    }
+    return {};
+  });
   
   const isSellerAuthPage = location.pathname === '/seller-login' || location.pathname === '/seller-register';
   const isShopperAuthPage = location.pathname === '/shopper-login' || location.pathname === '/shopper-register';
@@ -55,6 +66,14 @@ function App() {
       } else if (location.pathname.startsWith('/shopper')) {
         unsubscribe = authShopper.onAuthStateChanged((user) => {
           setShopper(user);
+
+          if (user) {
+            const storedCartItems = localStorage.getItem(`cartItems_${user.uid}`);
+            setCartItems(storedCartItems ? JSON.parse(storedCartItems) : {});
+          } else {
+            setCartItems({});
+          }
+
           if (!user && location.pathname !== '/shopper-register') {
             navigate('/shopper-login');
           }
@@ -72,8 +91,30 @@ function App() {
   }, [location.pathname, navigate, setSeller, setShopper]);
 
 
+  useEffect(() => {
+    const currentUser = authShopper.currentUser;
+    if(currentUser){
+      localStorage.setItem(`cartItems_${currentUser.uid}`, JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
 
 
+  //cart functions
+  const handleAddToCart= (item)=>{
+    const updateCartItems = {...cartItems, ...item};
+    setCartItems(updateCartItems);
+  }
+
+  const handleClearCart=()=>{
+    setCartItems({});
+    const currentUser = authShopper.currentUser;
+    if (currentUser) {
+      localStorage.removeItem(`cartItems_${currentUser.uid}`);
+    }
+  }
+  
+
+  //logout
   const handleLogoutSeller = async()=>{
     try{
       await signOut(authSeller);
@@ -107,12 +148,14 @@ function App() {
             <img src={Logo} alt="" height={50} width={50}/>
             <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SELLER'S</i></h2>
           </Navbar.Brand>
-          <Navbar.Collapse className="justify-content-end">
-            {/* {user && <Button onClick={()=>navigate('/cart')} style={{backgroundColor:"transparent", outline:"none", border:"none"}}>
-              <img src={cart_logo}  style={{height:"2.5rem", width:"2.5rem"}} alt="" />
-              {Object.keys(cartItems).length>0 && <Badge style={{borderRadius:"50%", marginRight:"1rem"}} bg='success'>{Object.keys(cartItems).length}</Badge>}
-            </Button>} */}
-            <Button className="logout_button"
+          <Navbar.Collapse className="justify-content-end" style={{gap:"1.5rem"}}>
+            <img src={userIcon} alt='user' 
+              onClick={()=>navigate(`/shopper/:${shopper.uid}/cart`)}
+              className="user_icon"
+            />
+
+            <img src={logout} alt="logout" 
+              className="logout"
               onClick={()=>{
                 if(seller){
                   handleLogoutSeller();
@@ -120,9 +163,7 @@ function App() {
                   navigate('/seller-login');
                 }
               }}
-            >
-              Logout
-            </Button> 
+            />
           </Navbar.Collapse>
         </Navbar>
       )}
@@ -137,18 +178,39 @@ function App() {
             <h2 style={{margin:0,color:"#4a0072",fontWeight:800}}><i>STAR SHOPPER'S</i></h2>
           </Navbar.Brand>
 
-          <Navbar.Collapse className="justify-content-end">
-            <Button className="logout_button"
+          <Navbar.Collapse className="justify-content-end" style={{gap:"1.5rem"}}>
+            <div className="cart_data">
+              <div className="cart-icon-container">
+                <img
+                  src={cart_logo}
+                  alt="cart"
+                  onClick={() => navigate(`/shopper/${shopper.uid}/cart`)}
+                  className="cart_logo"
+                />
+                {Object.keys(cartItems).length > 0 && (
+                  <div className="cart-badge">
+                    {Object.keys(cartItems).length}
+                  </div>
+                )}
+              </div>
+            </div>
+        
+            <img src={userIcon} alt='user' 
+              onClick={()=>navigate(`/shopper/${shopper.uid}/products-home`)}
+              className="user_icon"
+            />
+
+            {/* logout image */}
+            <img src={logout} alt="logout" 
+              className="logout"
               onClick={() => {
                 if (shopper) {
                   handleLogoutShopper();
                 } else {
                   navigate("/shopper-login");
                 }
-              }}
-            >
-              Logout
-            </Button>
+              }} 
+            />
           </Navbar.Collapse>
         </Navbar>
       )}
@@ -160,8 +222,8 @@ function App() {
         <Route path="/shopper-register" element={<RegisterShopper />} />
         <Route path="/shopper-login" element={<LoginShopper />} />
         <Route path="/shopper/home/:id" element={<ShopperHome />} />
-        <Route path="/shopper/:id/products-home" element={<ShopperProducts />}/>
-        <Route path="/shopper/:id/cart" element={<ShopperCart/>} />
+        <Route path="/shopper/:id/products-home" element={<ShopperProducts handleAddToCart={handleAddToCart} cartItems={cartItems}/>}/>
+        <Route path="/shopper/:id/cart" element={<ShopperCart handleClearCart={handleClearCart} cartItems={cartItems}/>} />
         <Route path="/shopper/:id/orders" element={<ShopperOrders/>} />
  
         {/* seller */}
